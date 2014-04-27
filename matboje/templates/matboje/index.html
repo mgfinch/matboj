@@ -1,0 +1,10 @@
+{% load url from future %}
+{% if matboje_list %}
+    <ul>
+    {% for matboj in matboje_list %}
+        <li><a href="{% url 'matboje:detail' matboj.id %}">{{ matboj.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No matbojs are available.</p>
+{% endif %}
