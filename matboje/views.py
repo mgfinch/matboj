@@ -21,19 +21,17 @@ class MatbojDetailView(DetailView):
         context = super(DetailView, self).get_context_data(**kwargs)
         matboj = get_object_or_404(Matboj, id=self.kwargs['pk'])
         context['form']=MatchForm(matboj)
+        
+def get_competitors_list(matboj):
+    competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
+        key=lambda x: x.ranking, reverse=True)
+    return competitors_list
  
-class MatchForm(forms.Form,MatbojDetailView):
-        
-        def get_competitors_list(self):
-            matboj = Matboj.objects.filter(id=self.kwargs['pk'])
-            competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
-                key=lambda x: x.ranking, reverse=True)
-            return competitors_list
-        
+class MatchForm(forms.Form):        
         winner = forms.ChoiceField(
-            competitors_list=get_competitors_list(self) )
+            competitors_list=get_competitors_list(matboj) )
         loser = forms.ChoiceField(
-            competitors_list=get_competitors_list(self) )
+            competitors_list=get_competitors_list(matboj) )
             
 
 
