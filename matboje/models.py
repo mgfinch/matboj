@@ -16,7 +16,10 @@ class Matboj(models.Model):
 class MatbojCompetitors(models.Model):
     competitor = models.ForeignKey('competitors.Competitor')
     matboj = models.ForeignKey(Matboj)
-    ranking = models.IntegerField(default=0)
+    ranking = models.IntegerField(default=1000)
+    
+    def __unicode__(self):
+        return self.competitor.name
 
     class Meta:
         # Order decreasingly by the ranking

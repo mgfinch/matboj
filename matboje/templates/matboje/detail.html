@@ -1,9 +1,18 @@
 <h1> {{ matboj.name }} </h1>
 <a href = ""> Výsledky </a>
 
-<br>
-<form action="/{{matboj.id}}/SubmitMatch/" method="post">{% csrf_token %}
-{{ form.as_p }}
+<div align = "right">
+<form action="SubmitMatch/" method="post">{% csrf_token %}
+{% for field in form %}
+ {{ field.label_tag }} {{ field }} 
+{% endfor %}
 <input type="submit" value="Submit" />
 </form>
+</div>
+
+<ul>
+{% for competitor in competitors_list %}
+    <li> {{competitor}} : {{competitor.ranking}}</li>    
+{% endfor %}   
+</ul>
 
