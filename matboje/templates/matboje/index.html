@@ -2,7 +2,7 @@
 {% if matboje_list %}
     <ul>
     {% for matboj in matboje_list %}
-        <li><a href="{% url 'matboje:detail' matboj.id %}">{{ matboj.name }}</a></li>
+        <li><a href="{% url 'matboje:detail' pk=matboj.id %}">{{ matboj.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

@@ -11,16 +11,13 @@ class Matboj(models.Model):
     
     def __unicode__(self):
         return self.name
-        
+
+# I wouldn't call this in plural, one instance of this class refers to one Competitor        
 class MatbojCompetitors(models.Model):
     competitor = models.ForeignKey('competitors.Competitor')
     matboj = models.ForeignKey(Matboj)
     ranking = models.IntegerField(default=0)
 
-    
-class MatchForm(ModelForm)
     class Meta:
-        model = Matboj
-        fields = ['competitors','competitors']
-
-
+        # Order decreasingly by the ranking
+        ordering = ['-ranking']    
