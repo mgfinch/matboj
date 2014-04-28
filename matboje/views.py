@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView
-from django import forms
 from matboje.models import Matboj, MatbojCompetitors
+from django.forms import ModelForm
 import math
 
 class IndexView(ListView):
@@ -14,24 +14,37 @@ class IndexView(ListView):
         """Return the last five published polls."""
         return Matboj.objects.order_by('-date').all()
 
+class MatchForm(ModelForm):
+    class Meta:
+        model = Matboj
+        fields = ['winner','looser']  
+        
+def get_competitors_list(matboj):
+    competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
+        key=lambda x: x.ranking, reverse=True)
+    return competitors_list
+
 class MatbojDetailView(DetailView):
     model = Matboj
     template_name = 'matboje/detail.html'
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         matboj = get_object_or_404(Matboj, id=self.kwargs['pk'])
-        context['form']=MatchForm(matboj)
-        
-def get_competitors_list(matboj):
-    competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
-        key=lambda x: x.ranking, reverse=True)
-    return competitors_list
- 
-class MatchForm(forms.Form):        
-        winner = forms.ChoiceField(
+        form = MatchForm()
+                winner = forms.ChoiceField(
             competitors_list=get_competitors_list(matboj) )
         loser = forms.ChoiceField(
             competitors_list=get_competitors_list(matboj) )
+        
+        
+        context['form']=MatchForm(matboj)
+        
+
+    
+
+ 
+      
+
             
 
 

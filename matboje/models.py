@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 # Create your models here.
     
@@ -15,4 +16,11 @@ class MatbojCompetitors(models.Model):
     competitor = models.ForeignKey('competitors.Competitor')
     matboj = models.ForeignKey(Matboj)
     ranking = models.IntegerField(default=0)
+
     
+class MatchForm(ModelForm)
+    class Meta:
+        model = Matboj
+        fields = ['competitors','competitors']
+
+
