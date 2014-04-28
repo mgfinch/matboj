@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^matboje', include('matboje.urls', namespace="matboje")),
+    # It's a convention to match the trailing / as well
+    url(r'^matboje/', include('matboje.urls', namespace="matboje")),
     )
 
 if settings.DEBUG:
