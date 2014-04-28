@@ -1,13 +1,9 @@
 <h1> {{ matboj.name }} </h1>
-<a href = "{% url 'matboje:results' matboj.id %}"> Výsledky </a>
+<a href = ""> Výsledky </a>
 
 <br>
-<form action="/SubmitMatch/" method="post">{% csrf_token %}
-{% for field in form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-{% endfor %}
+<form action="/{{matboj.id}}/SubmitMatch/" method="post">{% csrf_token %}
+{{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>
 
