@@ -1,14 +1,16 @@
 from django.contrib import admin
-from matboje.models import Matboj
+from matboje.models import Matboj, MatbojCompetitors
 
 
 class CompetitorsInline(admin.TabularInline):
-    model = Matboj.competitors.through
+    model = MatbojCompetitors
     extra = 6
     
 class MatbojAdmin(admin.ModelAdmin):
-
-    fields = ['name']
+    
+    fields = ['name','date']
     inlines = [CompetitorsInline]
 
+
 admin.site.register(Matboj,MatbojAdmin)
+

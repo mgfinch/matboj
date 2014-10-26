@@ -19,6 +19,11 @@ def get_competitors_list(matboj):
     competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
         key=lambda x: x.ranking, reverse=True)
     return competitors_list
+    
+class MatbojDetailViewDruzinaContext(object):
+    def __init__(self, druzina=None, score=0):
+        self.druzina = druzina
+        self.score = score
 
 class MatbojDetailView(DetailView):
     model = Matboj
@@ -34,7 +39,28 @@ class MatbojDetailView(DetailView):
         context['form']=MatchForm(instance=matboj)
         competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
             key=lambda x: x.ranking, reverse=True)
-        context['competitors_list']=competitors_list        
+        
+        context['competitors_list1']=competitors_list[:25]
+        context['competitors_list2']=competitors_list[25:]
+        
+        druziny_context = []
+        druziny = set()
+        for competitor in competitors_list:
+            druziny.add(competitor.competitor.druzina)
+
+        for druzina in druziny:
+            pocet_clenov = 0
+            item = MatbojDetailViewDruzinaContext(druzina=druzina, score=0)
+            for competitor in competitors_list:
+                if competitor.competitor.druzina == druzina:
+                    pocet_clenov = pocet_clenov + 1
+                    item.score = item.score + competitor.ranking
+            item.score = item.score/pocet_clenov
+            druziny_context.append(item)
+            
+        druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
+        context['druziny'] = druziny_context       
+              
         # you need to return context here!!
         return context
 
@@ -92,8 +118,14 @@ def SubmitMatch(request, *args, **kwargs):
     return HttpResponseRedirect(reverse('matboje:detail', args=(matboj.id,)))
     
 
-class ResultsView(DetailView):
+class MatbojAdminView(DetailView):
     model = Matboj
-    template_name = 'matboje/results.html'
-
+    template_name = 'matboje/matbojadmin.html'
+    
+    context_object_name = 'MatbojAdmin'
+    
+    def get_context_data(self, **kwargs):
+        context = super(MatbojAdminView, self).get_context_data(**kwargs)
+        
+        return context  
 

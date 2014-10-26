@@ -16,11 +16,11 @@ admin.site.register(Druzina, DruzinaAdmin)
 
 class MatbojsInline(admin.StackedInline):
     model = Matboj.competitors.through
-    extra = 1
+    extra = 0
     
 class CompetitorAdmin(admin.ModelAdmin):
 
-    fields = ['name']
+    fields = ['name','druzina']
     inlines = [MatbojsInline]
 
 admin.site.register(Competitor, CompetitorAdmin)
