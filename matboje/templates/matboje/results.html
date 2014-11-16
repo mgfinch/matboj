@@ -1,0 +1,26 @@
+<!-- Auto refresh results every 3 seconds -->
+<meta http-equiv="refresh" content="3">
+
+<h1 style="margin-bottom: 0px;"> {{ matboj.name }} </h1>
+
+<div>
+	<ol style="list-style-type: ol; display: inline-block;">
+
+	{% for competitor in competitors_list1 %}
+	    <li> {{competitor}} : {{competitor.ranking}}</li>    
+	{% endfor %} 
+	</ol>
+
+	<ol start="26" style="list-style-type: ol ; display: inline-block; vertical-align: top;">
+	{% for competitor in competitors_list2 %}
+	    <li> {{competitor}} : {{competitor.ranking}}</li>    
+	{% endfor %}
+	</ol>
+	  
+	<ol style="list-style-type: ol; display: inline-block;">
+	<h3> Poradie družín podľa priemerného skóre </h3>
+	{% for item in druziny %}
+	<li> {{ item.druzina }} : {{ item.score }} </li>
+	{% endfor %}
+	</ol>
+</div>

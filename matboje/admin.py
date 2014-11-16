@@ -10,7 +10,7 @@ class MatbojAdmin(admin.ModelAdmin):
     
     fields = ['name','date']
     inlines = [CompetitorsInline]
-
+    #list_display = ['name','date']
 
 admin.site.register(Matboj,MatbojAdmin)
 
