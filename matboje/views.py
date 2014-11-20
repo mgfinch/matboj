@@ -59,7 +59,8 @@ class MatbojDetailView(DetailView):
             druziny_context.append(item)
             
         druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
-        context['druziny'] = druziny_context       
+        context['druziny'] = druziny_context
+        context['list_druziny'] = len(druziny_context) > 1
               
         # you need to return context here!!
         return context
@@ -97,7 +98,8 @@ class MatbojResults(DetailView):
             druziny_context.append(item)
             
         druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
-        context['druziny'] = druziny_context       
+        context['druziny'] = druziny_context
+        context['list_druziny'] = len(druziny_context) > 1
               
         # you need to return context here!!
         return context

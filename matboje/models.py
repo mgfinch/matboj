@@ -1,7 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 from competitors.models import Competitor
-from django.forms.widgets import CheckboxSelectMultiple  
+from django.forms.widgets import CheckboxSelectMultiple
 
 # Create your models here.
     
@@ -21,7 +21,7 @@ class MatbojCompetitors(models.Model):
     ranking = models.IntegerField(default=1000)
     
     def __unicode__(self):
-        return self.competitor.name
+        return unicode(self.competitor)
 
     class Meta:
         # Order decreasingly by the ranking
