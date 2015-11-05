@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -89,6 +89,6 @@ STATIC_ROOT= os.path.join(BASE_DIR, "static")
 
 # We manually install django-debug-toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
-INTERNAL_IPS = ('127.0.0.1',)
-SHOW_TOOLBAR_CALLBACK = lambda : True
+INTERNAL_IPS = ()
+SHOW_TOOLBAR_CALLBACK = lambda : False
 
