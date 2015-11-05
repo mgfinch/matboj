@@ -25,6 +25,26 @@ class MatbojDetailViewDruzinaContext(object):
         self.druzina = druzina
         self.score = score
 
+def get_druziny_context(competitors_list):
+    druziny_context = []
+    druziny = set()
+    for competitor in competitors_list:
+        druziny.add(competitor.competitor.druzina)
+
+    for druzina in druziny:
+        pocet_clenov = 0
+        item = MatbojDetailViewDruzinaContext(druzina=druzina, score=0)
+        for competitor in competitors_list:
+            if competitor.competitor.druzina == druzina:
+                pocet_clenov = pocet_clenov + 1
+                item.score = item.score + competitor.ranking
+        item.score = item.score/pocet_clenov
+        item.score_str = str(round(item.score))
+        druziny_context.append(item)
+        
+    druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
+    return druziny_context
+
 class MatbojDetailView(DetailView):
     model = Matboj
     template_name = 'matboje/detail.html'
@@ -40,25 +60,11 @@ class MatbojDetailView(DetailView):
         competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
             key=lambda x: x.ranking, reverse=True)
         
-        context['competitors_list1']=competitors_list[:25]
-        context['competitors_list2']=competitors_list[25:]
+        col1 = max((len(competitors_list)+1)//2, 25)
+        context['competitors_list1']=competitors_list[:col1]
+        context['competitors_list2']=competitors_list[col1:]
         
-        druziny_context = []
-        druziny = set()
-        for competitor in competitors_list:
-            druziny.add(competitor.competitor.druzina)
-
-        for druzina in druziny:
-            pocet_clenov = 0
-            item = MatbojDetailViewDruzinaContext(druzina=druzina, score=0)
-            for competitor in competitors_list:
-                if competitor.competitor.druzina == druzina:
-                    pocet_clenov = pocet_clenov + 1
-                    item.score = item.score + competitor.ranking
-            item.score = item.score/pocet_clenov
-            druziny_context.append(item)
-            
-        druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
+        druziny_context = get_druziny_context(competitors_list)
         context['druziny'] = druziny_context
         context['list_druziny'] = len(druziny_context) > 1
               
@@ -79,30 +85,30 @@ class MatbojResults(DetailView):
         competitors_list = sorted(list(matboj.matbojcompetitors_set.all()),
             key=lambda x: x.ranking, reverse=True)
         
-        context['competitors_list1']=competitors_list[:25]
-        context['competitors_list2']=competitors_list[25:]
-        
-        druziny_context = []
-        druziny = set()
-        for competitor in competitors_list:
-            druziny.add(competitor.competitor.druzina)
+        col1 = max((len(competitors_list)+1)//2, 25)
+        context['competitors_list1']=competitors_list[:col1]
+        context['competitors_list2']=competitors_list[col1:]
 
-        for druzina in druziny:
-            pocet_clenov = 0
-            item = MatbojDetailViewDruzinaContext(druzina=druzina, score=0)
-            for competitor in competitors_list:
-                if competitor.competitor.druzina == druzina:
-                    pocet_clenov = pocet_clenov + 1
-                    item.score = item.score + competitor.ranking
-            item.score = item.score/pocet_clenov
-            druziny_context.append(item)
-            
-        druziny_context = sorted(druziny_context, key=lambda x: x.score, reverse=True)
+        druziny_context = get_druziny_context(competitors_list)
         context['druziny'] = druziny_context
         context['list_druziny'] = len(druziny_context) > 1
               
         # you need to return context here!!
         return context
+
+class MatbojSubmitPage(DetailView):
+    model = Matboj
+    template_name = 'matboje/submitpage.html'
+
+    context_object_name = 'matboj'
+
+    def get_context_data(self, **kwargs):
+        context = super(MatbojSubmitPage, self).get_context_data(**kwargs)
+        matboj = get_object_or_404(Matboj, id=self.kwargs['pk'])
+        context['form']=SubmitPageMatchForm(instance=matboj)
+
+        return context
+
 
 # Extracting the list of the competitors from the database and then
 # sorting it in python is rather uneffective - we can let the database
@@ -126,11 +132,28 @@ class MatchForm(ModelForm):
         
         self.fields['winner'] = forms.ModelChoiceField(
             queryset=self.instance.matbojcompetitors_set.all())
-        self.fields['winner'].widget.attrs.update({'size': '5', 'autofocus': 'autofocus'})
+        self.fields['winner'].widget.attrs.update({'size': '20', 'autofocus': 'autofocus', 'style': 'min-width: 150px;'})
 
         self.fields['loser'] = forms.ModelChoiceField(
             queryset=self.instance.matbojcompetitors_set.all())
-        self.fields['loser'].widget.attrs.update({'size': '5'})
+        self.fields['loser'].widget.attrs.update({'size': '20', 'style': 'min-width: 150px;'})
+
+    class Meta:
+        model = Matboj
+        fields = []
+
+class SubmitPageMatchForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SubmitPageMatchForm, self).__init__(*args, **kwargs)
+
+        self.fields['winner'] = forms.ModelChoiceField(
+            queryset=self.instance.matbojcompetitors_set.all())
+        self.fields['winner'].widget.attrs.update({'size': '30', 'autofocus': 'autofocus', 'style': 'min-width: 200px;'})
+
+        self.fields['loser'] = forms.ModelChoiceField(
+            queryset=self.instance.matbojcompetitors_set.all())
+        self.fields['loser'].widget.attrs.update({'size': '30', 'style': 'min-width: 200px;'})
 
     class Meta:
         model = Matboj
@@ -158,9 +181,10 @@ def SubmitMatch(request, *args, **kwargs):
     # so there is some duplicity of the code now
     else:
         form = MatchForm(matboj)
-        
-    return HttpResponseRedirect(reverse('matboje:detail', args=(matboj.id,)))
     
+    redirect = "matboje:submit_page" if ("submitpage" in request.path) else "matboje:detail"
+    return HttpResponseRedirect(reverse(redirect, args=(matboj.id,)))
+
 
 class MatbojAdminView(DetailView):
     model = Matboj

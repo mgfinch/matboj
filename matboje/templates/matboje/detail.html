@@ -14,7 +14,7 @@
 				{% endfor %}
 			</tr>
 			<tr><td colspan="2">
-				<input type="submit" value="Submit" style="right: 0px; position: absolute;" />
+				<input type="submit" value="Submit" style="right: 0px; position: absolute; padding: 10px;" />
 			</td></tr>
 		</table>
 	</form>
@@ -37,7 +37,7 @@
 		<ol style="list-style-type: ol; display: inline-block;">
 		<h3> Poradie družín podľa priemerného skóre </h3>
 		{% for item in druziny %}
-			<li> {{ item.druzina }} : {{ item.score }} </li>
+			<li> {{ item.druzina }} : {{ item.score_str }} </li>
 		{% endfor %}
 		</ol>
 	{% endif %}
@@ -46,3 +46,5 @@
 <br>
 <!-- <a href = "{% url 'matboje:matboj_admin' pk=matboj.id %}"> Administrácia </a> -->
 <a href = "{% url 'matboje:results' pk=matboj.id %}"> Výsledky </a>
+
+<a href = "{% url 'matboje:submit_page' pk=matboj.id %}"> SubmitPage </a>

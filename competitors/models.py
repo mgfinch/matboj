@@ -1,5 +1,5 @@
 from django.db import models
-from competitors import settings
+from matboj import settings
 
 # Create your models here.
 class Druzina(models.Model):

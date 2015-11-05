@@ -20,7 +20,7 @@
 		<ol style="list-style-type: ol; display: inline-block;">
 		<h3> Poradie družín podľa priemerného skóre </h3>
 		{% for item in druziny %}
-			<li> {{ item.druzina }} : {{ item.score }} </li>
+			<li> {{ item.druzina }} : {{ item.score_str }} </li>
 		{% endfor %}
 		</ol>
 	{% endif %}

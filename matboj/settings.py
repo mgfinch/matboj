@@ -26,6 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Flip first name and last name when priting Competitor
+COMPETITORS_NAME_REVERSED = False
 
 # Application definition
 
