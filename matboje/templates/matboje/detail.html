@@ -1,38 +1,50 @@
 <h1> {{ matboj.name }} </h1>
 
-
-<div align = "right">
-<form action="SubmitMatch/" method="post">{% csrf_token %}
-{% for field in form %}
- {{ field.label_tag }} {{ field }} 
-{% endfor %}
-<input type="submit" value="Submit" />
-</form>
-</div>
-<div>
-<ol style="list-style-type: ol; display: inline-block;">
-
-{% for competitor in competitors_list1 %}
-    <li> {{competitor}} : {{competitor.ranking}}</li>    
-{% endfor %} 
-</ol>
-
-<ol start="26" style="list-style-type: ol ; display: inline-block;">
-{% for competitor in competitors_list2 %}
-    <li> {{competitor}} : {{competitor.ranking}}</li>    
-{% endfor %}
-</ol>
-  
-<ol style="list-style-type: ol; display: inline-block;">
-<h3> Poradie družín podľa priemerného skóre </h3>
-{% for item in druziny %}
-<li> {{ item.druzina }} : {{ item.score }} </li>
-{% endfor %}
-</ol>
+<div style="position: fixed; right: 20px; top: 20px;">
+	<form action="SubmitMatch/" method="post">
+		{% csrf_token %}
+		<table>
+			<tr>
+				{% for field in form %}
+					<td>{{ field.label_tag }}</td>
+				{% endfor %}
+			</tr><tr>
+				{% for field in form %}
+					<td>{{ field }}</td>
+				{% endfor %}
+			</tr>
+			<tr><td colspan="2">
+				<input type="submit" value="Submit" style="right: 0px; position: absolute; padding: 10px;" />
+			</td></tr>
+		</table>
+	</form>
 </div>
 
 <div>
+	<ol style="list-style-type: ol; display: inline-block;">
+	{% for competitor in competitors_list1 %}
+	    <li> {{competitor}} : {{competitor.ranking}}</li>    
+	{% endfor %} 
+	</ol>
 
-
+	<ol start="26" style="list-style-type: ol ; display: inline-block; vertical-align: top;">
+	{% for competitor in competitors_list2 %}
+	    <li> {{competitor}} : {{competitor.ranking}}</li>    
+	{% endfor %}
+	</ol>
+	
+	{% if list_druziny %}  
+		<ol style="list-style-type: ol; display: inline-block;">
+		<h3> Poradie družín podľa priemerného skóre </h3>
+		{% for item in druziny %}
+			<li> {{ item.druzina }} : {{ item.score_str }} </li>
+		{% endfor %}
+		</ol>
+	{% endif %}
 </div>
-<a href = "{% url 'matboje:matboj_admin' pk=matboj.id %}"> Administrácia </a>
+
+<br>
+<!-- <a href = "{% url 'matboje:matboj_admin' pk=matboj.id %}"> Administrácia </a> -->
+<a href = "{% url 'matboje:results' pk=matboj.id %}"> Výsledky </a>
+
+<a href = "{% url 'matboje:submit_page' pk=matboj.id %}"> SubmitPage </a>
